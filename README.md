@@ -50,7 +50,7 @@ The pipeline has been developed with continuous integration (CI) and test driven
 7. Duplicate read marking ([`picard`](https://broadinstitute.github.io/picard/))
 8. Create bedGraph files ([`bedtools`](https://github.com/arq5x/bedtools2/)
 9. Create bigWig coverage files ([`bedGraphToBigWig`](http://hgdownload.soe.ucsc.edu/admin/exe/))
-10. Peak calling ([`SEACR`](https://github.com/FredHutch/SEACR), [`MACS2`](https://github.com/macs3-project/MACS))
+10. Peak calling ([`SEACR`](https://github.com/FredHutch/SEACR), [`MACS3`](https://github.com/macs3-project/MACS))
 11. Consensus peak merging and reporting ([`bedtools`](https://github.com/arq5x/bedtools2/))
 12. Library complexity ([preseq]([Preseq | The Smith Lab](http://smithlabresearch.org/software/preseq)))
 13. Fragment-based quality control ([`deepTools`](https://github.com/deeptools/deepTools/))
@@ -83,7 +83,7 @@ Now, you can run the pipeline using:
 nextflow run nf-core/cutandrun \
  -profile <docker/singularity/.../institute> \
  --input samplesheet.csv \
- --peakcaller 'seacr,MACS2' \
+ --peakcaller 'seacr,MACS3' \
  --genome GRCh38 \
  --outdir <OUTDIR>
 

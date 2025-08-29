@@ -341,7 +341,7 @@
                     "type": "string",
                     "default": "seacr",
                     "fa_icon": "fas fa-align-justify",
-                    "description": "Selects the peak caller for the pipeline. Options are: [seacr, macs2]. More than one peak caller can be chosen and the order specifies which is a primary peak called (the first) that will be used downstream. Any secondary peak callers will be run and outputed to the results folder."
+                    "description": "Selects the peak caller for the pipeline. Options are: [seacr, macs3]. More than one peak caller can be chosen and the order specifies which is a primary peak called (the first) that will be used downstream. Any secondary peak callers will be run and outputed to the results folder."
                 },
                 "use_control": {
                     "type": "boolean",
@@ -381,34 +381,34 @@
                     "description": "SEACR stringency.",
                     "enum": ["stringent", "relaxed"]
                 },
-                "macs2_qvalue": {
+                "macs3_qvalue": {
                     "type": "number",
                     "default": 0.01,
                     "fa_icon": "fas fa-align-justify",
-                    "description": "Q-value threshold for MACS2 peak caller."
+                    "description": "Q-value threshold for macs3 peak caller."
                 },
-                "macs2_pvalue": {
+                "macs3_pvalue": {
                     "type": "number",
                     "fa_icon": "fas fa-align-justify",
-                    "description": "P-value threshold for macs2 peak caller. If set it will overide the qvalue."
+                    "description": "P-value threshold for macs3 peak caller. If set it will overide the qvalue."
                 },
                 "macs_gsize": {
                     "type": "number",
                     "default": 2700000000,
                     "fa_icon": "fas fa-align-justify",
-                    "description": "parameter required by MACS2. If using an iGenomes reference these have been provided when `--genome` is set as *GRCh37*, *GRCh38*, *GRCm38*, *WBcel235*, *BDGP6*, *R64-1-1*, *EF2*, *hg38*, *hg19* and *mm10*. Otherwise the gsize will default to GRCh38."
+                    "description": "parameter required by macs3. If using an iGenomes reference these have been provided when `--genome` is set as *GRCh37*, *GRCh38*, *GRCm38*, *WBcel235*, *BDGP6*, *R64-1-1*, *EF2*, *hg38*, *hg19* and *mm10*. Otherwise the gsize will default to GRCh38."
                 },
-                "macs2_narrow_peak": {
+                "macs3_narrow_peak": {
                     "type": "boolean",
                     "default": true,
                     "fa_icon": "fas fa-align-justify",
-                    "description": "Determines whether MACS2 broad or narrow peak mode is used for the peak caller"
+                    "description": "Determines whether macs3 broad or narrow peak mode is used for the peak caller"
                 },
-                "macs2_broad_cutoff": {
+                "macs3_broad_cutoff": {
                     "type": "number",
                     "default": 0.1,
                     "fa_icon": "fas fa-align-justify",
-                    "description": "MACS2 broad cutoff parameter"
+                    "description": "macs3 broad cutoff parameter"
                 },
                 "consensus_peak_mode": {
                     "type": "string",

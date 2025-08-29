@@ -24,7 +24,7 @@
      - 6.1. [Bam to bedgraph](#Bamtobedgraph)
      - 6.2. [Bed to bigwig](#Bedtobigwig)
      - 6.3. [SEACR peak calling](#SEACRpeakcalling)
-     - 6.4. [MACS2 peak calling](#MACS2peakcalling)
+     - 6.4. [MACS3 peak calling](#MACS3peakcalling)
      - 6.5. [Consensus Peaks](#ConsensusPeaks)
 - 7. [Peak-based QC](#Peak-basedQC)
      - 7.1. [Peak Counts](#PeakCounts)
@@ -334,14 +334,14 @@ The [bigWig](https://genome.ucsc.edu/goldenpath/help/bigWig.html) format is an i
 
 [SEACR](https://github.com/FredHutch/SEACR) is a peak caller for data with low background-noise, so is well suited to CUT&Run/CUT&Tag data. SEACR can take in IgG control bedGraph files in order to avoid calling peaks in regions of the experimental data for which the IgG control is enriched. If `--use_control false` is specified, SEACR calls enriched regions in target data by selecting the top 5% of regions by AUC by default. This threshold can be overwritten using `--seacr_peak_threshold`.
 
-### 6.4. <a name='MACS2peakcalling'></a>MACS2 peak calling
+### 6.4. <a name='MACS3peakcalling'></a>MACS3 peak calling
 
 - `03_peak_calling/04_called_peaks/`
   - BED file containing peak coordinates and peak signal.
 
-MACS2 is a peak caller used in many other experiments such as ATAC-seq and ChIP-seq. It can deal with high levels of background noise but is generally less sensitive than SEACR. If you are having trouble calling peaks in SEACR, we recommend switching to this peak caller, especially if your QC is saying that you have a high level of background noise.
+MACS3 is a peak caller used in many other experiments such as ATAC-seq and ChIP-seq. It can deal with high levels of background noise but is generally less sensitive than SEACR. If you are having trouble calling peaks in SEACR, we recommend switching to this peak caller, especially if your QC is saying that you have a high level of background noise.
 
-MACS2 has its main parameters exposed through the pipeline configuration. The default p-values and genome size can be changed using the `--macs2_pvalue` and `--macs2_gsize` parameters. MACS2 has two calling modes: narrow and broad peak. We recommend using broad peak for epitopes with a wide peak range such as histone marks, and narrow peak for small binding proteins such as transcription factors. This mode can be changed using `--macs2_narrow_peak`.
+MACS3 has its main parameters exposed through the pipeline configuration. The default p-values and genome size can be changed using the `--macs3_pvalue` and `--macs3_gsize` parameters. MACS3 has two calling modes: narrow and broad peak. We recommend using broad peak for epitopes with a wide peak range such as histone marks, and narrow peak for small binding proteins such as transcription factors. This mode can be changed using `--macs3_narrow_peak`.
 
 ### 6.5. <a name='ConsensusPeaks'></a>Consensus Peaks
 

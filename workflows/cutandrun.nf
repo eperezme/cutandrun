@@ -89,7 +89,7 @@ ch_linear_duplication_header_multiqc    = file("$projectDir/assets/multiqc/linea
 def prepare_tool_indices = ["bowtie2"]
 
 // Check peak caller params
-def caller_list = ['seacr', 'macs2']
+def caller_list = ['seacr', 'macs3']
 callers = params.peakcaller ? params.peakcaller.split(',').collect{ it.trim().toLowerCase() } : ['seacr']
 if ((caller_list + callers).unique().size() != caller_list.size()) {
     exit 1, "Invalid variant calller option: ${params.peakcaller}. Valid options: ${caller_list.join(', ')}"
@@ -146,6 +146,8 @@ include { CAT_FASTQ                                                    } from ".
 include { PRESEQ_LCEXTRAP                                              } from "../modules/nf-core/preseq/lcextrap/main"
 include { SEACR_CALLPEAK as SEACR_CALLPEAK_IGG                         } from "../modules/nf-core/seacr/callpeak/main"
 include { SEACR_CALLPEAK as SEACR_CALLPEAK_NOIGG                       } from "../modules/nf-core/seacr/callpeak/main"
+include { MACS3_CALLPEAK as MACS3_CALLPEAK_IGG                         } from '../modules/nf-core/macs3/callpeak/main'
+include { MACS3_CALLPEAK as MACS3_CALLPEAK_NOIGG                       } from '../modules/nf-core/macs3/callpeak/main'
 include { MACS2_CALLPEAK as MACS2_CALLPEAK_IGG                         } from "../modules/nf-core/macs2/callpeak/main"
 include { MACS2_CALLPEAK as MACS2_CALLPEAK_NOIGG                       } from "../modules/nf-core/macs2/callpeak/main"
 include { DEEPTOOLS_COMPUTEMATRIX as DEEPTOOLS_COMPUTEMATRIX_GENE      } from "../modules/nf-core/deeptools/computematrix/main"
@@ -436,7 +438,7 @@ workflow CUTANDRUN {
     ch_bedgraph               = Channel.empty()
     ch_bigwig                 = Channel.empty()
     ch_seacr_peaks            = Channel.empty()
-    ch_macs2_peaks            = Channel.empty()
+    ch_macs3_peaks            = Channel.empty()
     ch_peaks_primary          = Channel.empty()
     ch_peaks_secondary        = Channel.empty()
     ch_peaks_summits          = Channel.empty()
@@ -505,7 +507,7 @@ workflow CUTANDRUN {
                 //SEACR_CALLPEAK_IGG.out.bed | view
             }
 
-            if('macs2' in callers) {
+            if('macs3' in callers) {
                 /*
                 * CHANNEL: Create target/control pairings
                 */
@@ -519,15 +521,15 @@ workflow CUTANDRUN {
                 // EXAMPLE CHANNEL STRUCT: [[META], TARGET_BAM, CONTROL_BAM]
                 //ch_bam_paired | view
 
-                MACS2_CALLPEAK_IGG (
+                MACS3_CALLPEAK_IGG (
                     ch_bam_paired,
                     params.macs_gsize
                 )
-                ch_macs2_peaks       = MACS2_CALLPEAK_IGG.out.peak
-                ch_peaks_summits     = MACS2_CALLPEAK_IGG.out.bed
-                ch_software_versions = ch_software_versions.mix(MACS2_CALLPEAK_IGG.out.versions)
+                ch_macs3_peaks       = MACS3_CALLPEAK_IGG.out.peak
+                ch_peaks_summits     = MACS3_CALLPEAK_IGG.out.bed
+                ch_software_versions = ch_software_versions.mix(MACS3_CALLPEAK_IGG.out.versions)
                 // EXAMPLE CHANNEL STRUCT: [[META], BED]
-                //MACS2_CALLPEAK_IGG.out.peak | view
+                //MACS3_CALLPEAK_IGG.out.peak | view
             }
         }
         else {
@@ -553,7 +555,7 @@ workflow CUTANDRUN {
                 //SEACR_NO_IGG.out.bed | view
             }
 
-            if('macs2' in callers) {
+            if('macs3' in callers) {
                 /*
                 * CHANNEL: Add fake control channel
                 */
@@ -562,24 +564,24 @@ workflow CUTANDRUN {
                 // EXAMPLE CHANNEL STRUCT: [[META], BAM, FAKE_CTRL]
                 //ch_samtools_bam_target_fctrl | view
 
-                MACS2_CALLPEAK_NOIGG (
+                MACS3_CALLPEAK_NOIGG (
                     ch_samtools_bam_target_fctrl,
                     params.macs_gsize
                 )
-                ch_macs2_peaks       = MACS2_CALLPEAK_NOIGG.out.peak
-                ch_peaks_summits     = MACS2_CALLPEAK_NOIGG.out.bed
-                ch_software_versions = ch_software_versions.mix(MACS2_CALLPEAK_NOIGG.out.versions)
+                ch_macs3_peaks       = MACS3_CALLPEAK_NOIGG.out.peak
+                ch_peaks_summits     = MACS3_CALLPEAK_NOIGG.out.bed
+                ch_software_versions = ch_software_versions.mix(MACS3_CALLPEAK_NOIGG.out.versions)
                 // EXAMPLE CHANNEL STRUCT: [[META], BED]
-                // MACS2_CALLPEAK_NOIGG.out.peak | view
+                // MACS3_CALLPEAK_NOIGG.out.peak | view
             }
         }
 
-        if ("macs2" in params.callers) {
+        if ("macs3" in params.callers) {
             /*
             * MODULE: Convert narrow or broad peak to bed
             */
-            PEAK_TO_BED ( ch_macs2_peaks )
-            ch_macs2_peaks       = PEAK_TO_BED.out.file
+            PEAK_TO_BED ( ch_macs3_peaks )
+            ch_macs3_peaks       = PEAK_TO_BED.out.file
             ch_software_versions = ch_software_versions.mix(PEAK_TO_BED.out.versions)
             // EXAMPLE CHANNEL STRUCT: [[META], BED]
             //PEAK_TO_BED.out.file | view
@@ -588,10 +590,10 @@ workflow CUTANDRUN {
         // Identify the primary peak data stream for downstream analysis
         if(callers[0] == 'seacr') {
             ch_peaks_primary   = ch_seacr_peaks
-            ch_peaks_secondary = ch_macs2_peaks
+            ch_peaks_secondary = ch_macs3_peaks
         }
-        if(callers[0] == 'macs2') {
-            ch_peaks_primary   = ch_macs2_peaks
+        if(callers[0] == 'macs3') {
+            ch_peaks_primary   = ch_macs3_peaks
             ch_peaks_secondary = ch_seacr_peaks
         }
 
